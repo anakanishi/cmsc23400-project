@@ -1,5 +1,6 @@
 package com.example.musictraining;
-//
+
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -18,7 +19,10 @@ import android.app.Activity;
 
 public class MainActivity extends AppCompatActivity {
     TextView tv1=null;
-    private SensorManager mSensorManager;
+    private SensorManager sensorManager;
+    private Sensor gyroSensor;
+    private Sensor linAccelSensor;
+    private Sensor accelSensor;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         tv1 = (TextView) findViewById(R.id.textView2);
         tv1.setVisibility(View.GONE);
 
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
 
         /* Uncomment this to see a list of sensors that is on the phone
@@ -39,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
             tv1.setVisibility(View.VISIBLE);
             tv1.append(mList.get(i).getName() + "\n");
         }*/
+
+        // Creating the sensors (hopefully)
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        linAccelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
     }
 
     @Override
