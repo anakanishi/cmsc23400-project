@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">music training</string>
+    <string name="action_settings">Settings</string>
+    <string name="hint_key">omg what</string>
+    <string name="button_send">Send</string>
+    <string name="instructions">To start recording data, start the action then hit start</string>
+    <string name="button_start">Start</string>
+    <string name="instructions1">To start recording data, start the action, then hit start</string>
+</resources>
