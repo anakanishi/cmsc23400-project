@@ -105,14 +105,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onStart() {
         super.onStart();
 
-        if (mSensorLight != null) {
-            sensorManager.registerListener(this, mSensorLight,
-                    SensorManager.SENSOR_DELAY_NORMAL);
-        }
-
         if (gyroSensor != null) {
             sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
+
+
+
+//        if (mSensorLight != null) {
+//            sensorManager.registerListener(this, mSensorLight,
+//                    SensorManager.SENSOR_DELAY_NORMAL);
+//        }
     }
 
     @Override
@@ -190,12 +192,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onSensorChanged(SensorEvent event) {
         int sensorType = event.sensor.getType();
         switch (sensorType) {
-            // Event came from the light sensor.
+            // Event came from the light sensor. - Honestly, this will probably never trigger again, but the light code in general is good for debugging purposes
             case Sensor.TYPE_LIGHT:
                 float currentValue = event.values[0];
                 // Handle light sensor
-                mTextSensorLight.setText(getResources().getString(
-                        R.string.label_light, currentValue));
+//                mTextSensorLight.setText(getResources().getString(
+//                        R.string.label_light, currentValue));
                 if (record){
                     File file = accessFile("light_data.txt");
                     BufferedWriter writer = null;
