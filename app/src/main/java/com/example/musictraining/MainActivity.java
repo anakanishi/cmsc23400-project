@@ -83,6 +83,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mTextSensorLight.setText(sensor_error);
         }
 
+        if (gyroSensor == null) {
+            tv1.append(sensor_error);
+        }
+
 
     }
 
@@ -116,6 +120,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             sensorManager.registerListener(this, mSensorLight,
                     SensorManager.SENSOR_DELAY_NORMAL);
         }
+
+        if (gyroSensor != null) {
+            sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
@@ -142,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 file.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
-                tv1.append("did not work\n");
+                tv1.append("creation of file failed\n");
             }
         }
         return file;
@@ -184,10 +192,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         int sensorType = event.sensor.getType();
-        float currentValue = event.values[0];
         switch (sensorType) {
             // Event came from the light sensor.
             case Sensor.TYPE_LIGHT:
+                float currentValue = event.values[0];
                 // Handle light sensor
                 mTextSensorLight.setText(getResources().getString(
                         R.string.label_light, currentValue));
@@ -196,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     BufferedWriter writer = null;
                     try {
                         writer = new BufferedWriter(new FileWriter(file, true /*append*/));
-                        writer.write(currentValue + "\n");
+                        writer.write("light value: " + currentValue + ", timestamp: " + event.timestamp + "\n");
                         writer.close();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -204,6 +212,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     }
                 }
                 break;
+            case Sensor.TYPE_GYROSCOPE:
+                float xAxis = event.values[0];
+                float yAxis = event.values[1];
+                float zAxis = event.values[2];
+                if (record == true){
+                    File file = accessFile("gyro_data.txt");
+                    BufferedWriter writer = null;
+                    try {
+                        writer = new BufferedWriter(new FileWriter(file, true /*append*/));
+                        writer.write("timestamp: " + event.timestamp + ", xAxis: " + xAxis + ", yAxis: " + yAxis + ", zAxis" + zAxis + "\n");
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        tv1.append("something went wrong writing to file!");
+                    }
+                }
+                break;
+
+
             default:
                 // do nothing
         }
