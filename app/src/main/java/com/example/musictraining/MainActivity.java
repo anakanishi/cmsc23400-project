@@ -2,14 +2,12 @@ package com.example.musictraining;
 
 // A lot of this code was written with the help of the google developer training gitbooks and android documentation
 
-
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,24 +20,19 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-
-
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     TextView tv1=null;
     private SensorManager sensorManager;
     private Sensor gyroSensor;
     private Sensor linAccelSensor;
     private Sensor accelSensor;
-
-    // Individual light and proximity sensors.
-    //private Sensor mSensorLight;
-    // TextViews to display current sensor values
-    //private TextView mTextSensorLight;
-
     private boolean record = false;
 
-    @Override
+    // For light sensor testing
+    private Sensor mSensorLight;
+    private TextView mTextSensorLight;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -57,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         linAccelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER_UNCALIBRATED);
 
         if (gyroSensor == null)
             tv1.append(sensor_error);
@@ -68,15 +61,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (accelSensor == null)
             tv1.append(sensor_error);
 
-        /*mTextSensorLight = findViewById(R.id.label_light);
+        mTextSensorLight = findViewById(R.id.label_light);
         mSensorLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         if (mSensorLight == null) {
             mTextSensorLight.setText(sensor_error);
-        }*/
-
-
-
-
+        }
     }
 
     @Override
@@ -93,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // as you specify a parent activity in AndroidManifest.xml.
 
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -109,27 +97,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
+        if (accelSensor != null) {
+            sensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+        if (linAccelSensor != null) {
+            sensorManager.registerListener(this, linAccelSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
 
 
-//        if (mSensorLight != null) {
-//            sensorManager.registerListener(this, mSensorLight,
-//                    SensorManager.SENSOR_DELAY_NORMAL);
-//        }
+        if (mSensorLight != null) {
+            sensorManager.registerListener(this, mSensorLight,
+                    SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         sensorManager.unregisterListener(this);
-    }
-
-    /* Checks if external storage is available for read and write */
-    public boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
     }
 
     public File accessFile(String fileName) {
@@ -157,6 +143,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Waits five seconds before we actually set to true
         // This will give enough time to put the phone back in pocket and continue motion
         // Got code from: https://stackoverflow.com/questions/31041884/execute-function-after-5-seconds-in-android
+
+        // Create necessary files if needed
+        File linAccelFile = accessFile("linear_acceleration_data.txt");
+        File accelFile = accessFile("uncalibrated_accelerometer_data.txt");
+        File gyroFile = accessFile("gyroscope_data.txt");
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(linAccelFile, true /*append*/));
+            writer.write("Start of the Linear Acceleration Data Collection\n");
+            writer.close();
+            writer = new BufferedWriter(new FileWriter(accelFile, true /*append*/));
+            writer.write("Start of the Uncalibrated Acceleration Data Collection\n");
+            writer.close();
+            writer = new BufferedWriter(new FileWriter(gyroFile, true /*append*/));
+            writer.write("Start of the Gyroscope Data Collection\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            tv1.append("something went wrong writing to file!");
+        }
 
         if (record)
             record = false;
@@ -196,8 +202,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             case Sensor.TYPE_LIGHT:
                 float currentValue = event.values[0];
                 // Handle light sensor
-//                mTextSensorLight.setText(getResources().getString(
-//                        R.string.label_light, currentValue));
+                mTextSensorLight.setText(getResources().getString(
+                        R.string.label_light, currentValue));
                 if (record){
                     File file = accessFile("light_data.txt");
                     BufferedWriter writer = null;
@@ -212,15 +218,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
                 break;
             case Sensor.TYPE_GYROSCOPE:
-                float xAxis = event.values[0];
-                float yAxis = event.values[1];
-                float zAxis = event.values[2];
+                float xAxisGyro = event.values[0];
+                float yAxisGyro = event.values[1];
+                float zAxisGyro = event.values[2];
                 if (record){
-                    File file = accessFile("gyro_data.txt");
+                    File file = accessFile("gyroscope_data.txt");
                     BufferedWriter writer = null;
                     try {
                         writer = new BufferedWriter(new FileWriter(file, true /*append*/));
-                        writer.write("timestamp: " + event.timestamp + ", xAxis: " + xAxis + ", yAxis: " + yAxis + ", zAxis" + zAxis + "\n");
+                        writer.write("timestamp: " + event.timestamp + ", xAxis: " + xAxisGyro + ", yAxis: " + yAxisGyro + ", zAxis" + zAxisGyro + "\n");
                         writer.close();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -228,8 +234,46 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     }
                 }
                 break;
-
-
+            case Sensor.TYPE_ACCELEROMETER_UNCALIBRATED:
+                tv1.append("EVENT: ACCEL");
+                float xAxisUncalibAccel = event.values[0];
+                float yAxisUncalibAccel = event.values[1];
+                float zAxisUncalibAccel = event.values[2];
+                float xAccelBias = event.values[3];
+                float yAccelBias = event.values[4];
+                float zAccelBias = event.values[5];
+                if (record){
+                    File file = accessFile("uncalibrated_accelerometer_data.txt");
+                    BufferedWriter writer = null;
+                    try {
+                        writer = new BufferedWriter(new FileWriter(file, true /*append*/));
+                        writer.write("timestamp: " + event.timestamp + ", xAxisUncalib: " + xAxisUncalibAccel +
+                                ", yAxisUncalib: " + yAxisUncalibAccel + ", zAxisUncalib" + zAxisUncalibAccel +
+                                ", xAxisBias: " + xAccelBias + ", yAxisBias: " + yAccelBias + ", zAxisBias: " + zAccelBias + "\n");
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        tv1.append("something went wrong writing to file!");
+                    }
+                }
+                break;
+            case Sensor.TYPE_LINEAR_ACCELERATION:
+                float xAxisLinAccel = event.values[0];
+                float yAxisLinAccel = event.values[1];
+                float zAxisLinAccel = event.values[2];
+                if (record){
+                    File file = accessFile("linear_acceleration_data.txt");
+                    BufferedWriter writer = null;
+                    try {
+                        writer = new BufferedWriter(new FileWriter(file, true /*append*/));
+                        writer.write("timestamp: " + event.timestamp + ", xAxis: " + xAxisLinAccel + ", yAxis: " + yAxisLinAccel + ", zAxis" + zAxisLinAccel + "\n");
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        tv1.append("something went wrong writing to file!");
+                    }
+                }
+                break;
             default:
                 // do nothing
         }
