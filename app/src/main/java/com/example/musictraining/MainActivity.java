@@ -4,32 +4,25 @@ package com.example.musictraining;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.TextView;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
-import android.app.Activity;
 
-import static android.os.Environment.getExternalStorageDirectory;
+
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     TextView tv1=null;
@@ -37,16 +30,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor gyroSensor;
     private Sensor linAccelSensor;
     private Sensor accelSensor;
-    public static final String LOG_TAG = "DIRECTORY-STATUS";
 
     // Individual light and proximity sensors.
-    private Sensor mSensorLight;
-
+    //private Sensor mSensorLight;
     // TextViews to display current sensor values
-    private TextView mTextSensorLight;
+    //private TextView mTextSensorLight;
 
     private boolean record = false;
-    //private File file = accessFile("light_data.txt");
 
     @Override
 
@@ -55,13 +45,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        tv1 = (TextView) findViewById(R.id.textView2);
-        //tv1.setVisibility(View.GONE);
-
-
-
-
+        String sensor_error = getResources().getString(R.string.no_sensor);
+        tv1 = findViewById(R.id.textView2);
 
         /* Uncomment this to see a list of sensors that is on the phone
         List<Sensor> mList= mSensorManager.getSensorList(Sensor.TYPE_ALL);
@@ -69,23 +54,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             tv1.append(mList.get(i).getName() + "\n");
         }*/
 
-        // Creating the sensors (hopefully)
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         linAccelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
+        if (gyroSensor == null)
+            tv1.append(sensor_error);
 
-        mTextSensorLight = findViewById(R.id.label_light);
+        if (linAccelSensor == null)
+            tv1.append(sensor_error);
+
+        if (accelSensor == null)
+            tv1.append(sensor_error);
+
+        /*mTextSensorLight = findViewById(R.id.label_light);
         mSensorLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        String sensor_error = getResources().getString(R.string.no_sensor);
         if (mSensorLight == null) {
             mTextSensorLight.setText(sensor_error);
-        }
+        }*/
 
-        if (gyroSensor == null) {
-            tv1.append(sensor_error);
-        }
+
 
 
     }
@@ -161,32 +150,40 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     {
         // Do something in response to button click
 
-        if (record == true)
+        tv1.append("button clicked!");
+
+        // Waits five seconds before we actually set to true
+        // This will give enough time to put the phone back in pocket and continue motion
+        // Got code from: https://stackoverflow.com/questions/31041884/execute-function-after-5-seconds-in-android
+
+        if (record)
             record = false;
         else {
             tv1.append("writing to file\n");
-            record = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tv1.append("set to true\n");
+                    record = true;
+                }
+            }, 5000);
+            //record = true;
         }
 
-        if (record == true)
+        if (record)
             tv1.append("true\n");
         else
             tv1.append("false\n");
 
-        // File stored in MyFiles > com.example.musictraining
-//        String fileName = "test_file1.txt";
-//
-//        File file = accessFile(fileName);
-//        BufferedWriter writer = null;
-//        try {
-//            writer = new BufferedWriter(new FileWriter(file, true /*append*/));
-//            writer.write("This is a test file.");
-//            writer.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            tv1.append("something went wrong writing to file!");
-//        }
-        tv1.append("yay");
+        // Then we want to only record for 10 seconds (it is 15000 because we have the five second initial delay)
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tv1.append("set to false\n");
+                record = false;
+            }
+        }, 15000);
+
     }
 
     @Override
@@ -199,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 // Handle light sensor
                 mTextSensorLight.setText(getResources().getString(
                         R.string.label_light, currentValue));
-                if (record == true){
+                if (record){
                     File file = accessFile("light_data.txt");
                     BufferedWriter writer = null;
                     try {
@@ -216,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 float xAxis = event.values[0];
                 float yAxis = event.values[1];
                 float zAxis = event.values[2];
-                if (record == true){
+                if (record){
                     File file = accessFile("gyro_data.txt");
                     BufferedWriter writer = null;
                     try {
