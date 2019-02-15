@@ -3,6 +3,8 @@ package com.example.musictraining;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,13 +28,19 @@ import android.app.Activity;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
     TextView tv1=null;
     private SensorManager sensorManager;
     private Sensor gyroSensor;
     private Sensor linAccelSensor;
     private Sensor accelSensor;
     public static final String LOG_TAG = "DIRECTORY-STATUS";
+
+    // Individual light and proximity sensors.
+    private Sensor mSensorLight;
+
+    // TextViews to display current sensor values
+    private TextView mTextSensorLight;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
         tv1 = (TextView) findViewById(R.id.textView2);
         //tv1.setVisibility(View.GONE);
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+
 
 
         /* Uncomment this to see a list of sensors that is on the phone
         List<Sensor> mList= mSensorManager.getSensorList(Sensor.TYPE_ALL);
         for (int i = 1; i < mList.size(); i++) {
-            tv1.setVisibility(View.VISIBLE);
             tv1.append(mList.get(i).getName() + "\n");
         }*/
 
@@ -59,6 +67,15 @@ public class MainActivity extends AppCompatActivity {
         gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         linAccelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        mTextSensorLight = findViewById(R.id.label_light);
+        mSensorLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        String sensor_error = getResources().getString(R.string.error_no_sensor);
+        if (mSensorLight == null) {
+            mTextSensorLight.setText(sensor_error);
+        }
+
+
 
     }
 
@@ -84,6 +101,22 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (mSensorLight != null) {
+            sensorManager.registerListener(this, mSensorLight,
+                    SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        sensorManager.unregisterListener(this);
+    }
+
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
@@ -93,16 +126,15 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    public File getPublicStorageDir(String fileName) {
+    public File accessFile(String fileName) {
         // Get the directory for the public files directory.
-        //File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "new.txt");
         File file = new File(this.getExternalFilesDir(null), fileName);
+        // If there is no file, it creates one
         if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
-                tv1.setVisibility(View.VISIBLE);
                 tv1.append("did not work\n");
             }
         }
@@ -114,35 +146,42 @@ public class MainActivity extends AppCompatActivity {
     {
         // Do something in response to button click
 
-        tv1 = findViewById(R.id.textView2);
-        tv1.setVisibility(View.VISIBLE);
-        tv1.append("hello\n");
+
 
         // File stored in MyFiles > com.example.musictraining
-        String fileName = "test_file1.txt";
-
-        File file = getPublicStorageDir(fileName);
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(file, true /*append*/));
-            writer.write("This is a test file.");
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            tv1.append("bufferwriter");
-
-        }
-
-        tv1.append("made it");
-
-        // Note: based on this test, can access external storage on my phone
-//        boolean isWritable = isExternalStorageWritable();
-//        if(isWritable == true)
-//            tv1.append("can write and read!\n");
-
-
-
+//        String fileName = "test_file1.txt";
+//
+//        File file = accessFile(fileName);
+//        BufferedWriter writer = null;
+//        try {
+//            writer = new BufferedWriter(new FileWriter(file, true /*append*/));
+//            writer.write("This is a test file.");
+//            writer.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            tv1.append("something went wrong writing to file!");
+//        }
+        tv1.append("yay");
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        int sensorType = event.sensor.getType();
+        float currentValue = event.values[0];
+        switch (sensorType) {
+            // Event came from the light sensor.
+            case Sensor.TYPE_LIGHT:
+                // Handle light sensor
+                mTextSensorLight.setText(getResources().getString(
+                        R.string.label_light, currentValue));
+                break;
+            default:
+                // do nothing
+        }
+    }
 
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
 }

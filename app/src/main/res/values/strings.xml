@@ -6,4 +6,7 @@
     <string name="instructions">To start recording data, start the action then hit start</string>
     <string name="button_start">Start</string>
     <string name="instructions1">To start recording data, start the action, then hit start</string>
+    <string name="label_light">Light Sensor: %1$.2f</string>
+    <string name="error_no_sensor">No sensor</string>
+
 </resources>
