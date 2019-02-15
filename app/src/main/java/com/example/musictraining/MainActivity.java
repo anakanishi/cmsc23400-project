@@ -1,5 +1,8 @@
 package com.example.musictraining;
 
+// A lot of this code was written with the help of the google developer training gitbooks and android documentation
+
+
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -41,6 +44,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // TextViews to display current sensor values
     private TextView mTextSensorLight;
+
+    private boolean record = false;
+    //private File file = accessFile("light_data.txt");
+
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +75,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         linAccelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         accelSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
+
         mTextSensorLight = findViewById(R.id.label_light);
         mSensorLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        String sensor_error = getResources().getString(R.string.error_no_sensor);
+        String sensor_error = getResources().getString(R.string.no_sensor);
         if (mSensorLight == null) {
             mTextSensorLight.setText(sensor_error);
         }
-
 
 
     }
@@ -146,7 +153,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     {
         // Do something in response to button click
 
+        if (record == true)
+            record = false;
+        else {
+            tv1.append("writing to file\n");
+            record = true;
+        }
 
+        if (record == true)
+            tv1.append("true\n");
+        else
+            tv1.append("false\n");
 
         // File stored in MyFiles > com.example.musictraining
 //        String fileName = "test_file1.txt";
@@ -174,6 +191,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 // Handle light sensor
                 mTextSensorLight.setText(getResources().getString(
                         R.string.label_light, currentValue));
+                if (record == true){
+                    File file = accessFile("light_data.txt");
+                    BufferedWriter writer = null;
+                    try {
+                        writer = new BufferedWriter(new FileWriter(file, true /*append*/));
+                        writer.write(currentValue + "\n");
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        tv1.append("something went wrong writing to file!");
+                    }
+                }
                 break;
             default:
                 // do nothing
