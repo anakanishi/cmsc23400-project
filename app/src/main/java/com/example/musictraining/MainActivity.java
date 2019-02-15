@@ -235,7 +235,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
                 break;
             case Sensor.TYPE_ACCELEROMETER_UNCALIBRATED:
-                tv1.append("EVENT: ACCEL");
                 float xAxisUncalibAccel = event.values[0];
                 float yAxisUncalibAccel = event.values[1];
                 float zAxisUncalibAccel = event.values[2];
