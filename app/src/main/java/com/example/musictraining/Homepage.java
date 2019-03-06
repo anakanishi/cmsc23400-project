@@ -69,6 +69,7 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                 break;
             case "W":
                 activity_display.setText("Walking");
+                break;
         }
     }
 
