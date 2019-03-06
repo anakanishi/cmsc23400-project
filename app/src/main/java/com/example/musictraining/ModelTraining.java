@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class ModelTraining extends AppCompatActivity implements SensorEventListener {
     TextView tv1=null;
     private SensorManager sensorManager;
     private Sensor gyroSensor;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_training);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         String sensor_error = getResources().getString(R.string.no_sensor);

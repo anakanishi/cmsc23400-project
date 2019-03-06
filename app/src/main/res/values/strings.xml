@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">music training</string>
+    <string name="app_name">Movesic</string>
     <string name="action_settings">Settings</string>
     <string name="hint_key">omg what</string>
     <string name="button_send">Send</string>
@@ -8,5 +8,9 @@
     <string name="instructions1">To start recording data, start the action, then hit start</string>
     <string name="label_light">Light Sensor: %1$.2f</string>
     <string name="no_sensor">No sensor</string>
+    <string name="title_activity_homepage">Movesic</string>
+    <string name="button_sensing_text">Calibrate Sensing</string>
+    <string name="button_music_text">Configure Music</string>
+    <string name="activity_text">TextView</string>
 
 </resources>
