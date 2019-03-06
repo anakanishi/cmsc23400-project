@@ -26,6 +26,11 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
         startActivity(intent);
     }
 
+    public void goToMusic(View view) {
+        Intent intent = new Intent(Homepage.this, MusicChoice.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
