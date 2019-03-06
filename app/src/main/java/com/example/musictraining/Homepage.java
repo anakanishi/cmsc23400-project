@@ -56,7 +56,7 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
         String res = predictor.modelPredict(event);
         switch (res) {
             case "D":
-                activity_display.setText("idk what this is");
+                activity_display.setText("Sitting/Idle");
                 break;
             case "J":
                 activity_display.setText("Jumping");
@@ -65,7 +65,7 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                 activity_display.setText("Running");
                 break;
             case "S":
-                activity_display.setText("idk what this is either");
+                activity_display.setText("Skipping");
                 break;
             case "W":
                 activity_display.setText("Walking");
