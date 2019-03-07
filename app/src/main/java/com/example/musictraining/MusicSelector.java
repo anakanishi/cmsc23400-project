@@ -40,6 +40,8 @@ public class MusicSelector extends AppCompatActivity {
     private String activityType;
     private ContentResolver cr;
     private SharedPreferences.Editor prefseditor;
+    TextView errorText;
+    ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,28 +53,30 @@ public class MusicSelector extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         /* initialize both the error text and spinner to invisible so they dont show up lol */
-        TextView errorText = findViewById(R.id.music_error_text);
+        errorText = findViewById(R.id.music_error_text);
         errorText.setVisibility(View.INVISIBLE);
-        ListView lv = findViewById(R.id.music_items);
+        lv = findViewById(R.id.music_items);
         lv.setVisibility(View.INVISIBLE);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefseditor = prefs.edit();
+
+        Intent intent = getIntent();
+        activityType = intent.getExtras().get("activity").toString();
 
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (shouldShowRequestPermissionRationale(
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                // Explain to the user why we need to read the contacts
-            }
-
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     1390284982);
 
             // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
             // app-defined int constant that should be quite unique
+            return;
         }
+        getMusicInfo();
+    }
 
-        /* attempt to get music info */
+    private void getMusicInfo() {
         cr = getContentResolver();
         Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor cursor = cr.query(uri, null, null, null, null);
@@ -99,12 +103,12 @@ public class MusicSelector extends AppCompatActivity {
             lv.setVisibility(View.VISIBLE);
         }
         cursor.close();
+    }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefseditor = prefs.edit();
-
-        Intent intent = getIntent();
-        activityType = intent.getExtras().get("activity").toString();
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getMusicInfo();
+        }
     }
 
 }
