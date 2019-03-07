@@ -12,5 +12,6 @@
     <string name="button_sensing_text">Calibrate Sensing</string>
     <string name="button_music_text">Configure Music</string>
     <string name="activity_text">TextView</string>
+    <string name="title_activity_music_selector">Select Music</string>
 
 </resources>

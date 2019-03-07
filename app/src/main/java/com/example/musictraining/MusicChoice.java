@@ -1,6 +1,7 @@
 package com.example.musictraining;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,5 +20,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class MusicChoice extends AppCompatActivity{
+
+    public void goToMusicSelector(View view) {
+        Intent intent = new Intent(MusicChoice.this, MusicSelector.class);
+        intent.putExtra("activity", view.getTag().toString());
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_music);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
 
 }
