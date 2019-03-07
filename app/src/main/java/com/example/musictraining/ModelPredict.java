@@ -129,10 +129,6 @@ public class ModelPredict{
 
         int sensorType = event.sensor.getType();
         switch (sensorType) {
-            case Sensor.TYPE_LIGHT:
-                double currentValue = event.values[0];
-                //mTextSensorLight.setText(getResources().getString(R.string.label_light, currentValue));
-                break;
             case Sensor.TYPE_GYROSCOPE:
                 double xAxisGyro = event.values[0];
                 double yAxisGyro = event.values[1];
