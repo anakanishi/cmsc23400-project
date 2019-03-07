@@ -160,7 +160,7 @@ public class ModelPredict {
 
                 AccxAxisUncalib.add(xAxisUncalibAccel);
                 AccyAxisUncalib.add(yAxisUncalibAccel);
-                AcczAxisUncalib.add(zAccelBias);
+                AcczAxisUncalib.add(zAxisUncalibAccel);
 
                 AccxAxisBias.add(xAccelBias);
                 AccyAxisBias.add(yAccelBias);
