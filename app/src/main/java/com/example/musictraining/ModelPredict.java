@@ -25,12 +25,12 @@ public class ModelPredict {
     private List<Double> coef_D;
     private List<Double> coef_J;
     private List<Double> coef_R;
-    private List<Double> coef_S;
+//    private List<Double> coef_S;
     private List<Double> coef_W;
     private double bias_D;
     private double bias_J;
     private double bias_R;
-    private double bias_S;
+//    private double bias_S;
     private double bias_W;
 
     public ModelPredict() {
@@ -225,7 +225,7 @@ public class ModelPredict {
         double probD = predict(x, coef_D, bias_D);
         double probJ = predict(x, coef_J, bias_J);
         double probR = predict(x, coef_R, bias_R);
-        double probS = predict(x, coef_S, bias_S);
+//        double probS = predict(x, coef_S, bias_S);
         double probW = predict(x, coef_W, bias_W);
 
         double[] res = {probD, probJ, probR, probS, probW};
