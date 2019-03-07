@@ -70,8 +70,6 @@ public class MusicSelector extends AppCompatActivity {
 
             // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
             // app-defined int constant that should be quite unique
-
-            return;
         }
 
         /* attempt to get music info */
