@@ -8,7 +8,7 @@
     tools:context=".MusicSelector"
     tools:showIn="@layout/activity_music_selector">
 
-    <Spinner
+    <ListView
         android:id="@+id/music_items"
         android:layout_width="0dp"
         android:layout_height="0dp"

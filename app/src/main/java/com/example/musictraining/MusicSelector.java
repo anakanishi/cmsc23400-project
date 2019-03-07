@@ -6,16 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -55,8 +53,8 @@ public class MusicSelector extends AppCompatActivity {
         /* initialize both the error text and spinner to invisible so they dont show up lol */
         TextView errorText = findViewById(R.id.music_error_text);
         errorText.setVisibility(View.INVISIBLE);
-        Spinner spinner = findViewById(R.id.music_items);
-        spinner.setVisibility(View.INVISIBLE);
+        ListView lv = findViewById(R.id.music_items);
+        lv.setVisibility(View.INVISIBLE);
 
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -99,8 +97,8 @@ public class MusicSelector extends AppCompatActivity {
             } while (cursor.moveToNext());
             ArrayAdapter<StringWithTag> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerData);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
-            spinner.setVisibility(View.VISIBLE);
+            lv.setAdapter(adapter);
+            lv.setVisibility(View.VISIBLE);
         }
         cursor.close();
 
