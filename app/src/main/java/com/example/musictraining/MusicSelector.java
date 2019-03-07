@@ -111,6 +111,7 @@ public class MusicSelector extends AppCompatActivity {
                     long tag = s.tag;
                     prefseditor.putLong(activityType, tag);
                     prefseditor.putString(activityType+"name", s.string);
+                    prefseditor.commit();
                     Intent intent = new Intent(MusicSelector.this, Homepage.class);
                     startActivity(intent);
                 }
