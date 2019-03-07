@@ -9,9 +9,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -24,9 +26,9 @@ public class MusicSelector extends AppCompatActivity {
 
     public class StringWithTag {
         public String string;
-        public Object tag;
+        public long tag;
 
-        public StringWithTag(String stringPart, Object tagPart) {
+        public StringWithTag(String stringPart, long tagPart) {
             string = stringPart;
             tag = tagPart;
         }
@@ -101,6 +103,18 @@ public class MusicSelector extends AppCompatActivity {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             lv.setAdapter(adapter);
             lv.setVisibility(View.VISIBLE);
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position,
+                                        long id) {
+                    StringWithTag s = (StringWithTag) parent.getItemAtPosition(position);
+                    long tag = s.tag;
+                    prefseditor.putLong(activityType, tag);
+                    prefseditor.putString(activityType+"name", s.string);
+                    Intent intent = new Intent(MusicSelector.this, Homepage.class);
+                    startActivity(intent);
+                }
+            });
         }
         cursor.close();
     }
@@ -108,6 +122,9 @@ public class MusicSelector extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             getMusicInfo();
+        }
+        else {
+            NavUtils.navigateUpFromSameTask(this);
         }
     }
 
