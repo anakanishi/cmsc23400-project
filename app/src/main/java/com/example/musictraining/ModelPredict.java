@@ -228,7 +228,7 @@ public class ModelPredict {
 //        double probS = predict(x, coef_S, bias_S);
         double probW = predict(x, coef_W, bias_W);
 
-        double[] res = {probD, probJ, probR, probS, probW};
+        double[] res = {probD, probJ, probR, probW};
         double max = -1000;
         int idx = 0;
         for (int i = 0; i < res.length; i++) {
