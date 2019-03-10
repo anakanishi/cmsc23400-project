@@ -45,16 +45,34 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
 
     public void goToCalibrate(View view) {
         Intent intent = new Intent(Homepage.this, ModelTraining.class);
-        player.stop();
-        player.release();
         startActivity(intent);
     }
 
     public void goToMusic(View view) {
         Intent intent = new Intent(Homepage.this, MusicChoice.class);
-        player.stop();
-        player.release();
         startActivity(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        current_prediction = -1;
+        currently_playing = -1;
+        consecutiveNumPredictions = 0;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (player.isPlaying()) {
+            stopMusic();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        player.release();
     }
 
     @Override
