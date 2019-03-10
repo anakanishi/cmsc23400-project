@@ -113,11 +113,12 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                     activity_subtext.setText("No music set");
                 }
                 else {
-                    activity_subtext.setText(prefs.getString("sittingname", ""));
                     // This is checking if hte song needs to be changed
                     if (current_prediction != 0){
                         if (current_prediction == -1) {
                             // First initialization of player
+                            activity_subtext.setText(prefs.getString("sittingname", ""));
+                            activity_display.setText("Sitting/Idle");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
                             currently_playing = 0;
@@ -130,12 +131,13 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                         if (consecutiveNumPredictions > ticksBeforeSwitch && current_prediction != currently_playing) {
                             // Stop the current song
                             stopMusic();
+                            activity_subtext.setText(prefs.getString("sittingname", ""));
+                            activity_display.setText("Sitting/Idle");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
                         }
                     }
                 }
-                activity_display.setText("Sitting/Idle");
                 break;
             case "J":
                 music_id = prefs.getLong("jumping", -1);
@@ -143,10 +145,11 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                     activity_subtext.setText("No music set");
                 }
                 else {
-                    activity_subtext.setText(prefs.getString("jumpingname", ""));
                     if (current_prediction != 1){
                         if (current_prediction == -1) {
                             // First initialization of player
+                            activity_subtext.setText(prefs.getString("jumpingname", ""));
+                            activity_display.setText("Jumping");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
                             currently_playing = 1;
@@ -159,12 +162,13 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                         if (consecutiveNumPredictions > ticksBeforeSwitch && current_prediction != currently_playing) {
                             // Stop the current song
                             stopMusic();
+                            activity_subtext.setText(prefs.getString("jumpingname", ""));
+                            activity_display.setText("Jumping");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
                         }
                     }
                 }
-                activity_display.setText("Jumping");
                 break;
             case "R":
                 music_id = prefs.getLong("running", -1);
@@ -172,10 +176,11 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                     activity_subtext.setText("No music set");
                 }
                 else {
-                    activity_subtext.setText(prefs.getString("runningname", ""));
                     if (current_prediction != 2){
                         if (current_prediction == -1) {
                             // First initialization of player
+                            activity_subtext.setText(prefs.getString("runningname", ""));
+                            activity_display.setText("Running");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
                             currently_playing = 2;
@@ -188,12 +193,13 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                         if (consecutiveNumPredictions > ticksBeforeSwitch && current_prediction != currently_playing) {
                             // Stop the current song
                             stopMusic();
+                            activity_subtext.setText(prefs.getString("runningname", ""));
+                            activity_display.setText("Running");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
                         }
                     }
                 }
-                activity_display.setText("Running");
                 break;
             case "S":
                 music_id = prefs.getLong("skipping", -1);
@@ -201,10 +207,11 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                     activity_subtext.setText("No music set");
                 }
                 else {
-                    activity_subtext.setText(prefs.getString("skippingname", ""));
                     if (current_prediction != 3){
                         if (current_prediction == -1) {
                             // First initialization of player
+                            activity_subtext.setText(prefs.getString("skippingname", ""));
+                            activity_display.setText("Skipping");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
                             currently_playing = 3;
@@ -217,12 +224,13 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                         if (consecutiveNumPredictions > ticksBeforeSwitch && current_prediction != currently_playing) {
                             // Stop the current song
                             stopMusic();
+                            activity_subtext.setText(prefs.getString("skippingname", ""));
+                            activity_display.setText("Skipping");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
                         }
                     }
                 }
-                activity_display.setText("Skipping");
                 break;
             case "W":
                 music_id = prefs.getLong("walking", -1);
@@ -230,10 +238,11 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                     activity_subtext.setText("No music set");
                 }
                 else {
-                    activity_subtext.setText(prefs.getString("walkingname", ""));
                     if (current_prediction != 4){
                         if (current_prediction == -1) {
                             // First initialization of player
+                            activity_subtext.setText(prefs.getString("walkingname", ""));
+                            activity_display.setText("Walking");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
                             currently_playing = 4;
@@ -246,12 +255,13 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                         if (consecutiveNumPredictions > ticksBeforeSwitch && current_prediction != currently_playing) {
                             // Stop the current song
                             stopMusic();
+                            activity_subtext.setText(prefs.getString("walkingname", ""));
+                            activity_display.setText("Walking");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
                         }
                     }
                 }
-                activity_display.setText("Walking");
                 break;
         }
     }
