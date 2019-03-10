@@ -41,7 +41,7 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
     private int current_prediction;
     private int currently_playing;
     private int consecutiveNumPredictions = 0;
-    private int ticksBeforeSwitch = 10;
+    private int ticksBeforeSwitch = 5;
 
     public void goToCalibrate(View view) {
         Intent intent = new Intent(Homepage.this, ModelTraining.class);
