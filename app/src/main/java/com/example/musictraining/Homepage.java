@@ -39,6 +39,9 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
     private SharedPreferences prefs;
     private AudioAttributes audio_attrib = new AudioAttributes.Builder().setUsage(USAGE_MEDIA).setContentType(CONTENT_TYPE_MUSIC).build();
     private int current_prediction;
+    private int currently_playing;
+    private int consecutiveNumPredictions = 0;
+    private int ticksBeforeSwitch = 10;
 
     public void goToCalibrate(View view) {
         Intent intent = new Intent(Homepage.this, ModelTraining.class);
@@ -64,6 +67,7 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         player = new MediaPlayer();
         current_prediction = -1;
+        currently_playing = -1;
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -80,6 +84,24 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
         }
     }
 
+    private void playMusic(Uri contentUri) {
+        player.setAudioAttributes(audio_attrib);
+        try {
+            player.setDataSource(getApplicationContext(), contentUri);
+            player.prepare();
+            player.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // To be honest there is probably a better way to indicate error.
+            activity_subtext.setText("ERROR - MUSIC CANNOT PLAY");
+        }
+    }
+
+    private void stopMusic() {
+        player.stop();
+        player.reset();
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         String res = predictor.modelPredict(event);
@@ -94,22 +116,22 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                     activity_subtext.setText(prefs.getString("sittingname", ""));
                     // This is checking if hte song needs to be changed
                     if (current_prediction != 0){
-                        // If the song needs to be changed, we stop the current song.
-                        if (current_prediction != -1) {
-                            player.stop();
-                            player.reset();
+                        if (current_prediction == -1) {
+                            // First initialization of player
+                            Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
+                            playMusic(contentUri);
+                            currently_playing = 0;
                         }
+                        consecutiveNumPredictions = 0;
                         current_prediction = 0;
-                        Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
-                        player.setAudioAttributes(audio_attrib);
-                        try {
-                            player.setDataSource(getApplicationContext(), contentUri);
-                            player.prepare();
-                            player.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            // To be honest there is probably a better way to indicate error.
-                            activity_subtext.setText("ERROR - MUSIC CANNOT PLAY");
+                    }
+                    else {
+                        consecutiveNumPredictions++;
+                        if (consecutiveNumPredictions > ticksBeforeSwitch && current_prediction != currently_playing) {
+                            // Stop the current song
+                            stopMusic();
+                            Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
+                            playMusic(contentUri);
                         }
                     }
                 }
@@ -123,22 +145,22 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                 else {
                     activity_subtext.setText(prefs.getString("jumpingname", ""));
                     if (current_prediction != 1){
-                        // If the song needs to be changed, we stop the current song.
-                        if (current_prediction != -1) {
-                            player.stop();
-                            player.reset();
+                        if (current_prediction == -1) {
+                            // First initialization of player
+                            Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
+                            playMusic(contentUri);
+                            currently_playing = 1;
                         }
+                        consecutiveNumPredictions = 0;
                         current_prediction = 1;
-                        Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
-                        player.setAudioAttributes(audio_attrib);
-                        try {
-                            player.setDataSource(getApplicationContext(), contentUri);
-                            player.prepare();
-                            player.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            // To be honest there is probably a better way to indicate error.
-                            activity_subtext.setText("ERROR - MUSIC CANNOT PLAY");
+                    }
+                    else {
+                        consecutiveNumPredictions++;
+                        if (consecutiveNumPredictions > ticksBeforeSwitch && current_prediction != currently_playing) {
+                            // Stop the current song
+                            stopMusic();
+                            Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
+                            playMusic(contentUri);
                         }
                     }
                 }
@@ -152,22 +174,22 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                 else {
                     activity_subtext.setText(prefs.getString("runningname", ""));
                     if (current_prediction != 2){
-                        // If the song needs to be changed, we stop the current song.
-                        if (current_prediction != -1) {
-                            player.stop();
-                            player.reset();
+                        if (current_prediction == -1) {
+                            // First initialization of player
+                            Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
+                            playMusic(contentUri);
+                            currently_playing = 2;
                         }
+                        consecutiveNumPredictions = 0;
                         current_prediction = 2;
-                        Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
-                        player.setAudioAttributes(audio_attrib);
-                        try {
-                            player.setDataSource(getApplicationContext(), contentUri);
-                            player.prepare();
-                            player.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            // To be honest there is probably a better way to indicate error.
-                            activity_subtext.setText("ERROR - MUSIC CANNOT PLAY");
+                    }
+                    else {
+                        consecutiveNumPredictions++;
+                        if (consecutiveNumPredictions > ticksBeforeSwitch && current_prediction != currently_playing) {
+                            // Stop the current song
+                            stopMusic();
+                            Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
+                            playMusic(contentUri);
                         }
                     }
                 }
@@ -181,22 +203,22 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                 else {
                     activity_subtext.setText(prefs.getString("skippingname", ""));
                     if (current_prediction != 3){
-                        // If the song needs to be changed, we stop the current song.
-                        if (current_prediction != -1) {
-                            player.stop();
-                            player.reset();
+                        if (current_prediction == -1) {
+                            // First initialization of player
+                            Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
+                            playMusic(contentUri);
+                            currently_playing = 3;
                         }
+                        consecutiveNumPredictions = 0;
                         current_prediction = 3;
-                        Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
-                        player.setAudioAttributes(audio_attrib);
-                        try {
-                            player.setDataSource(getApplicationContext(), contentUri);
-                            player.prepare();
-                            player.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            // To be honest there is probably a better way to indicate error.
-                            activity_subtext.setText("ERROR - MUSIC CANNOT PLAY");
+                    }
+                    else {
+                        consecutiveNumPredictions++;
+                        if (consecutiveNumPredictions > ticksBeforeSwitch && current_prediction != currently_playing) {
+                            // Stop the current song
+                            stopMusic();
+                            Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
+                            playMusic(contentUri);
                         }
                     }
                 }
@@ -210,21 +232,22 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                 else {
                     activity_subtext.setText(prefs.getString("walkingname", ""));
                     if (current_prediction != 4){
-                        // If the song needs to be changed, we stop the current song.
-                        if (current_prediction != -1) {
-                            player.stop();
-                            player.reset();
+                        if (current_prediction == -1) {
+                            // First initialization of player
+                            Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
+                            playMusic(contentUri);
+                            currently_playing = 4;
                         }
+                        consecutiveNumPredictions = 0;
                         current_prediction = 4;
-                        Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
-                        try {
-                            player.setDataSource(getApplicationContext(), contentUri);
-                            player.prepare();
-                            player.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            // To be honest there is probably a better way to indicate error.
-                            activity_subtext.setText("ERROR - MUSIC CANNOT PLAY");
+                    }
+                    else {
+                        consecutiveNumPredictions++;
+                        if (consecutiveNumPredictions > ticksBeforeSwitch && current_prediction != currently_playing) {
+                            // Stop the current song
+                            stopMusic();
+                            Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
+                            playMusic(contentUri);
                         }
                     }
                 }
