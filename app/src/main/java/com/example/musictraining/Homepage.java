@@ -135,6 +135,7 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                             activity_display.setText("Sitting/Idle");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
+                            currently_playing = 0;
                         }
                     }
                 }
@@ -166,6 +167,7 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                             activity_display.setText("Jumping");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
+                            currently_playing = 1;
                         }
                     }
                 }
@@ -197,6 +199,7 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                             activity_display.setText("Running");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
+                            currently_playing = 2;
                         }
                     }
                 }
@@ -228,6 +231,7 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                             activity_display.setText("Skipping");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
+                            currently_playing = 3;
                         }
                     }
                 }
@@ -259,6 +263,7 @@ public class Homepage extends AppCompatActivity implements SensorEventListener{
                             activity_display.setText("Walking");
                             Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music_id);
                             playMusic(contentUri);
+                            currently_playing = 4;
                         }
                     }
                 }
