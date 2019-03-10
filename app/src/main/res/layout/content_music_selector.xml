@@ -10,12 +10,11 @@
 
     <ListView
         android:id="@+id/music_items"
-        android:layout_width="407dp"
-        android:layout_height="620dp"
+        android:layout_width="404dp"
+        android:layout_height="569dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:choiceMode="singleChoice"
         android:clickable="true"
         android:divider="@android:color/transparent"
@@ -26,12 +25,9 @@
         android:paddingTop="20dp"
         android:paddingRight="20dp"
         android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.538"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/music_error_text"
